@@ -1,79 +1,100 @@
 import * as param from "./const.js"
-import {P,thet,gx,gy} from "./utils.js"
-function vx_rk4(t, m, x, y) {
-    return P(t) * math.cos(thet(t)) / m - gx(x,y);
-}
-function vy_rk4(t, m, x, y) {
-    return P(t) * math.sin(thet(t)) / m - gy(x,y);
-}
-function x_rk4(v) {
-    return v;
-}
-function y_rk4(v) {
-    return v;
-}
-function m_rk4(t) {
-    return - P(t) / param.W
-}
-function rk4(vx,vy,x,y,m,r,v){
-    let k1_vx = dt * vx_rk4(t, m, x, y);
-    let k1_vy = dt * vy_rk4(t, m, x, y);
-    let k1_x  = dt * x_rk4(vx);
-    let k1_y  = dt * y_rk4(vy); 
-    let k1_m  = dt * m_rk4(t)
+import rungekutta from "./rungekutta.js";
 
-    let k2_vx = dt * vx_rk4(t + dt/2, m + k1_m/2, x + k1_x/2, y + k1_y/2);
-    let k2_vy = dt * vy_rk4(t + dt/2, m + k1_m/2, x + k1_x/2, y + k1_y/2);
-    let k2_x  = dt * x_rk4(vx + k1_vx/2);
-    let k2_y  = dt * y_rk4(vy + k1_vy/2);
-    let k2_m  = dt * m_rk4(t + dt/2);
-
-    let k3_vx = dt * vx_rk4(t + dt/2, m + k2_m/2, x + k2_x/2, y + k2_y/2);
-    let k3_vy = dt * vy_rk4(t + dt/2, m + k2_m/2, x + k2_x/2, y + k2_y/2);
-    let k3_x  = dt * x_rk4(vx + k2_vx/2);
-    let k3_y  = dt * y_rk4(vy + k2_vy/2);
-    let k3_m  = dt * m_rk4(t + dt/2);
-
-    let k4_vx = dt * vx_rk4(t + dt, m + k3_m, x + k3_x, y + k3_y);
-    let k4_vy = dt * vy_rk4(t + dt, m + k3_m, x + k3_x, y + k3_y);
-    let k4_x  = dt * x_rk4(vx + k3_vx);
-    let k4_y  = dt * y_rk4(vy + k3_vy);
-    let k4_m  = dt * m_rk4(t + dt)
-
-
-    vx += (k1_vx + 2 * k2_vx + 2 * k3_vx + k4_vx) / 6;
-    vy += (k1_vy + 2 * k2_vy + 2 * k3_vy + k4_vy) / 6;
-    x  += (k1_x + 2 * k2_x + 2 * k3_x + k4_x) / 6;
-    y  += (k1_y + 2 * k2_y + 2 * k3_y + k4_y) / 6;
-    m  += (k1_m + 2 * k2_m + 2 * k3_m + k4_m) / 6;
-    r  = math.sqrt(math.pow(x, 2) + math.pow(y + param.rM, 2));
-    v  = math.sqrt(math.pow(vx,2) + math.pow(vy,2))
+// НУ
+const app = document.querySelector("#app")
+const table = document.createElement("table");
+table.classList.add('app__table')
+const tr_heade = document.createElement('tr')
+tr_heade.classList.add('tr__header')
+const tr_head = `
+<tr class="tr__header">
+<td>t, с</td>
+<td>m, кг</td>
+<td>Vx, м/с</td>
+<td>Vy, м/с</td>
+<td>x, м</td>
+<td>y, м </td>
+<td style="padding-left: 20px">V, м/с </td>
+<td style="padding-left: 20px">r, м</td>
+<td style="padding-left: 40px">thet, град</td>
+<td style="padding-left: 20px">THET, град</td>
+<td style="padding-left: 20px">alfa, град</td>
+<td>fi, град</td>
+</tr>
+`
+tr_heade.insertAdjacentHTML('beforeend', tr_head)
+app.append(table) 
+table.insertAdjacentElement('beforeend', tr_heade)
+let dt = param.step;
+let t = param.t0;
+let t_prev = t;
+let el = [param.m0, param.vx0, param.vy0, param.x0, param.y0, param.v0, param.r0,0,0,0,0];
+let el_prev = el.slice();
+function tr_iter(t,el){
+    return `
+        <td class="app__ceil">${t.toFixed(5)}</td>
+        <td class="app__ceil">${el[0].toFixed(4)}</td>
+        <td class="app__ceil">${el[1].toFixed(4)}</td>
+        <td class="app__ceil">${el[2].toFixed(4)}</td>
+        <td class="app__ceil">${el[3].toFixed(4)}</td>
+        <td class="app__ceil">${el[4].toFixed(4)}</td>
+        <td class="app__ceil">${el[5].toFixed(4)}</td>
+        <td class="app__ceil">${el[6].toFixed(4)}</td>
+        <td class="app__ceil">${el[7].toFixed(4)}</td>
+        <td class="app__ceil">${el[8].toFixed(4)}</td>
+        <td class="app__ceil">${el[9].toFixed(4)}</td>
+        <td class="app__ceil">${el[10].toFixed(4)}</td>
+    `
 }
+function html(t, el){
+    const tr = document.createElement('tr')
+    tr.insertAdjacentHTML('beforeend', tr_iter(t, el))
+    table.insertAdjacentElement('beforeend', tr)
+}
+
 function init() {
-    // НУ
-    let t0 = 0;
-    let r0 = 0;
-    let vx = 0;
-    let vy = 0;
-    let v = 0;
-    let x = 0;
-    let y = 0;
-    let arr = [vx,vy,x,y,m,r,v]
-    let dt = param.step;
-    dt = 1;
-    let m = param.m0;
-
-    // Радиус-вектор
-    let r = r0;
-    let t = t0;
-    while ( r < param.rk) {
-        rk4(arr)
-        if (r > param.rk + math.pow(10,-3)){
-
+    html(t, el)
+    while (
+        el[5] < param.vk
+        // t < 20
+        ) {
+        if (t + dt > param.t1 && t < param.t1) {
+            dt = param.t1 - t;
+            t += dt;
+            rungekutta(el, dt, t);
+            html(t, el)
+            dt = param.step - dt;
+            t += dt;
+            rungekutta(el, dt, t);
+            html(t, el);
+            dt = param.step
         }
-        t  += dt;
-        t = + t.toFixed(1)
-        console.log(`t = ${t} || P = ${P(t)}`)
+        if (t + dt > param.t2 && t < param.t2) {
+            dt = param.t2 - t;
+            t += dt;
+            rungekutta(el, dt, t);
+            html(t, el)
+            dt = param.step - dt;
+            t += dt;
+            rungekutta(el, dt, t);
+            html(t, el)
+            dt = param.step
+        }
+        el_prev = el.slice();
+        t_prev = t;
+        rungekutta(el, dt, t);
+        t += dt;
+        if (el[5] < param.vk) {
+            html(t, el);
+        }
+        if (el[5] - param.eps_v > param.vk) {
+            el = el_prev.slice();
+            t = t_prev;
+            dt = dt / 10;
+            t += dt;
+            rungekutta(el, dt, t);
+        }
     }
 }
 init()
