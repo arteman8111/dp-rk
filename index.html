@@ -11,11 +11,38 @@
 </head>
 
 <body>
-    <section class="render">
+    <div class="app" id="app">
         <div class="container">
-            <div class="app" id="app"></div>
+            <h1 class="app__title">Расчеты для фиксированных точек(Этап 1)</h1>
+            <div class="app__fix"></div>
+            <div class="app__table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>t, с</th>
+                            <th>m, кг</th>
+                            <th>Vx, м/с</th>
+                            <th>Vy, м/с</th>
+                            <th>x, м</th>
+                            <th>y, м </th>
+                            <th>V, м/с </th>
+                            <th>r, м</th>
+                            <th>thet, град</th>
+                            <th>THET, град</th>
+                            <th>alfa, град</th>
+                            <th>fi, град</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="app__table-body">
+                    <table>
+                        <tbody id="data">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 </body>
 <script src="./js/main.js" type="module"></script>
 

@@ -5,7 +5,7 @@
 }
 
 :root{
-    --bg-main: #fff;
+    --bg-main: #f7f7f7;
     --color-main: #000;
 }
 
@@ -21,7 +21,7 @@ html {
     font-weight: 400;
     font-size: 14px;
     line-height: 24px;
-    font-family: sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: var(--color-main);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
