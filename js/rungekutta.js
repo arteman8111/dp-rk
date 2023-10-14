@@ -4,7 +4,7 @@ import { P, thet, TETA, TETAc, alpha, fi } from "./express.js";
 import { debugThis } from "./support.js";
 const grad = value => value * 180 / math.pi;
 function rungekutta(el, dt, t) {
-    // debugThis(t,t2)   
+    // debugThis(t,665.200)   
     let k1_vx = dt * vx_toch(t, el[0], el[3], el[4], P(t));
     let k1_vy = dt * vy_toch(t, el[0], el[3], el[4], P(t));
     let k1_x = dt * x_toch(el[1]);
@@ -37,11 +37,10 @@ function rungekutta(el, dt, t) {
     el[4] += (k1_y + 2 * k2_y + 2 * k3_y + k4_y) / 6;
     el[5] = math.sqrt(math.pow(el[1], 2) + math.pow(el[2], 2))
     el[6] = math.sqrt(math.pow(el[3], 2) + math.pow(el[4] + rM, 2));
-    const TETAk = TETA(el[1], el[2], el[3], el[4], el[5], el[6]);
-    const TETAkc = TETAc(el[1], el[2])
     el[7] = grad(thet(t));  
-    el[8] = grad(TETAkc);
-    el[9] = grad(alpha(TETAk, TETAkc));
+    el[8] = grad(TETA(el[1], el[2], el[3], el[4], el[5], el[6]));
+    el[9] = grad(alpha(el[2],el[4]));
     el[10] = grad(fi(el[3], el[4]));
+    el[11] = grad(TETAc(el[1], el[2]));
 }
 export default rungekutta

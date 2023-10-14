@@ -22,7 +22,7 @@ const P = (t) => {
 }
 const TETA = (vx, vy, x, y, v, r) => math.asin((x * vx + y * vy) / (v * r));
 const TETAc = (vx, vy) => math.atan(vy / vx);
-const alpha = (TETA, TETAc) => TETA - TETAc;
+const alpha = (vy,y) => math.acos(y/vy);
 const fi = (x, y) => math.atan(x / (y + param.rM));
 
 const gx = (x, y) => param.uM * x / math.pow((math.pow(x, 2) + math.pow((param.rM + y), 2)), 1.5)
