@@ -31,7 +31,7 @@ const html = (t, el) => {
     // const tr = document.createElement('tr')
     // tr.insertAdjacentHTML('beforeend', tr_iter(t, el))
     // tbody.insertAdjacentElement('beforeend', tr)
-    // console.log(`${t.toFixed(4)} ${el[0].toFixed(4)} ${el[1].toFixed(4)} ${el[2].toFixed(4)} ${el[3].toFixed(4)} ${el[4].toFixed(4)} ${el[5].toFixed(4)} ${el[6].toFixed(4)} ${el[7].toFixed(4)} ${el[8].toFixed(4)} ${el[9].toFixed(4)} ${el[10].toFixed(4)} ${el[11].toFixed(4)}`);
+    console.log(`${t.toFixed(7)} ${el[0].toFixed(4)} ${el[1].toFixed(4)} ${el[2].toFixed(4)} ${el[3].toFixed(4)} ${el[4].toFixed(4)} ${el[5].toFixed(4)} ${el[6].toFixed(4)} ${el[7].toFixed(4)} ${el[8].toFixed(4)} ${el[9].toFixed(4)} ${el[10].toFixed(4)} ${el[11].toFixed(4)}`);
 }
 
 export {

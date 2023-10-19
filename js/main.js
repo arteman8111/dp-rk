@@ -12,7 +12,7 @@ let el_prev = el.slice();
 
 function init() {
     html(t, el)
-    while (el[5] + param.eps_v < param.vk) {
+    while (math.abs(el[5] - param.vk) > param.eps_v) {
         if (t + dt > param.t1 && t < param.t1) {
             dt = param.t1 - t;
             t += dt;
@@ -39,30 +39,21 @@ function init() {
         t_prev = t;
         rungekutta(el, dt, t);
         t += dt;
-        if (el[5] + param.eps_v > param.vk) {
+        // html(t, el);
+        if (el[5] > param.vk) {
             el = el_prev.slice();
-            el_prev = el.slice();
             t = t_prev;
+            el_prev = el.slice();
             t_prev = t;
             dt = dt / 10;
-            rungekutta(el, dt, t);
-            t += dt;
-            if (el[5] + param.eps_v > param.vk) {
-                el = el_prev.slice();
-                t = t_prev;
-            }
         }
-        // if(dt === param.step){
-        //     html(t, el);
-        // } else if (math.abs(el[5] - param.vk) <= param.eps_v){
-        //     html(t,el)
-        // }
     }
 }
 init()
 console.log(el);
 console.log(el[5] - param.vk);
+console.log(t);
 const delta_r = el[6] - param.rk;
 const delta_thet = el[8]
-let err_arr = [delta_r,delta_thet]
+let err_arr = [delta_r, delta_thet]
 console.log(err_arr);
