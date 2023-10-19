@@ -9,7 +9,6 @@ let t = param.t0;
 let t_prev = t;
 let el = [param.m0, param.vx0, param.vy0, param.x0, param.y0, param.v0, param.r0, 90, 0, 0, 0, 90];
 let el_prev = el.slice();
-// console.log(x);
 
 function init() {
     html(t, el)
@@ -46,19 +45,18 @@ function init() {
             t = t_prev;
             t_prev = t;
             dt = dt / 10;
-            t += dt;
             rungekutta(el, dt, t);
+            t += dt;
             if (el[5] + param.eps_v > param.vk) {
                 el = el_prev.slice();
                 t = t_prev;
-                continue
             }
         }
-        if(dt === param.step){
-            html(t, el);
-        } else if (math.abs(el[5] - param.vk) <= param.eps_v){
-            html(t,el)
-        }
+        // if(dt === param.step){
+        //     html(t, el);
+        // } else if (math.abs(el[5] - param.vk) <= param.eps_v){
+        //     html(t,el)
+        // }
     }
 }
 init()
