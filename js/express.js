@@ -1,14 +1,14 @@
 import * as param from "./const.js";
 
-const thet = (t) => {
+const thet = (t, thet_torch, thet_2) => {
     if (t <= param.tv) {
         return math.pi / 2
     } else if (t <= param.t1) {
-        return math.pi / 2 + param.thet_torch * (t - param.tv)
+        return math.pi / 2 + thet_torch * (t - param.tv)
     } else if (t < param.t2) {
-        return math.pi / 2 + param.thet_torch * (param.t1 - param.tv)
+        return math.pi / 2 + thet_torch * (param.t1 - param.tv)
     } else if (t >= param.t2) {
-        return param.thet_2
+        return thet_2
     }
 }
 const P = (t) => {
@@ -20,7 +20,7 @@ const P = (t) => {
         return param.P2;
     }
 }
-const TETA = (vx, vy, x, y, v, r) => math.asin((x * vx + y * vy) / (v * r));
+const TETA = (vx, vy, x, y, v, r) => math.asin((x * vx + (y+param.rM) * vy) / (v * r));
 const TETAc = (vx, vy) => math.atan(vy / vx);
 const alpha = (vy,y) => math.acos(y/vy);
 const fi = (x, y) => math.atan(x / (y + param.rM));
@@ -28,8 +28,8 @@ const fi = (x, y) => math.atan(x / (y + param.rM));
 const gx = (x, y) => param.uM * x / math.pow((math.pow(x, 2) + math.pow((param.rM + y), 2)), 1.5)
 const gy = (x, y) => param.uM * (param.rM + y) / math.pow((math.pow(x, 2) + math.pow((param.rM + y), 2)), 1.5)
 
-const vx_toch = (t, m, x, y, P) => P * math.cos(thet(t)) / m - gx(x, y);
-const vy_toch = (t, m, x, y, P) => P * math.sin(thet(t)) / m - gy(x, y);
+const vx_toch = (t, m, x, y, P, thet_torch, thet_2) => P * math.cos(thet(t, thet_torch, thet_2)) / m - gx(x, y);
+const vy_toch = (t, m, x, y, P, thet_torch, thet_2) => P * math.sin(thet(t, thet_torch, thet_2)) / m - gy(x, y);
 const x_toch = (v) => v;
 const y_toch = (v) => v;
 const m_toch = (P) => -P / param.W

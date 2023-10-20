@@ -3,13 +3,7 @@ function debugThis(t, tk) {
         debugger
     }
 }
-function printLog(t, el) {
-    console.log(t);
-    el.forEach(item => {
-        console.log(` ${item}`);
-    });
-}
+
 export {
-    debugThis,
-    printLog
+    debugThis
 }

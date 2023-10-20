@@ -23,9 +23,9 @@ const thet_torch = -0.001; // рад
 const thet_2 = -0.3;
 
 // Ошибка по ТЗ
-const eps_r = math.pow(10, -3)
-const eps_v = math.pow(10, -4)
-const eps_thet = math.pow(10, -5)
+const eps_r = math.pow(10, -8)
+const eps_v = math.pow(10, -8)
+const eps_thet = math.pow(10, -5) * math.pi / 180;
 const eps_extr = math.pow(10, -2)
 
 // НУ
@@ -36,6 +36,11 @@ const x0 = 0;
 const y0 = 0;
 const v0 = 0;
 const r0 = rM;
+const thet = 90;
+const THET = 0;
+const THETc = 90;
+const alfa = 0;
+const fi = 0;
 
 // Конечные параметры
 const vk = math.sqrt(uM / (rM + h_isl_2_2));
@@ -71,5 +76,10 @@ export {
     x0,
     y0,
     v0,
-    r0
+    r0,
+    THET,
+    THETc,
+    alfa,
+    fi,
+    thet
 }
