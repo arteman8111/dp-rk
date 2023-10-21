@@ -2,6 +2,7 @@ import * as param from "./const.js"
 import paramIter from "./paramIter.js";
 import { html, render } from "./render.js";
 import { vk, rk } from "./express.js";
+import { consoleLog } from "./render.js";
 let i = 1;
 const integr = (thet, h, t1, t2, P0) => {
     let dt = param.step;
@@ -18,7 +19,7 @@ const integr = (thet, h, t1, t2, P0) => {
             dt = param.step - dt;
             t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
-            dt = param.step
+            dt = param.step;
         }
         if (t + dt > t2 && t < t2) {
             dt = t2 - t;
@@ -98,8 +99,8 @@ const printTable = (thet, h, t1, t2, P0) => {
 
 
 function init() {
-    function optimus() {
-        let thet = [param.thet_torch, param.thet_2];
+    function optimus(thet_thet, h, t1, t2, P0) {
+        let thet = thet_thet.slice();
         const thet_step = [math.pow(10, -5), math.pow(10, -8)];
 
         let el1, delta_F;
@@ -108,21 +109,21 @@ function init() {
             let el, thetk, delta_next, delta_prev;
             thetk = thet.slice();
             thetk[0] += thet_step[0];
-            el = integr(thetk);
-            delta_next = el[6] - param.rk;
+            el = integr(thetk, h, t1, t2, P0);
+            delta_next = el[6] - rk(h);
             thetk[0] -= 2 * thet_step[0];
-            el = integr(thetk);
-            delta_prev = el[6] - param.rk
+            el = integr(thetk, h, t1, t2, P0);
+            delta_prev = el[6] - rk(h)
             return (delta_next - delta_prev) / (2 * thet_step[0])
         }
         function thet_torch_th(thet) {
             let el, thetk, delta_next, delta_prev;
             thetk = thet.slice();
             thetk[0] += thet_step[0];
-            el = integr(thetk);
+            el = integr(thetk, h, t1, t2, P0);
             delta_next = el[8];
             thetk[0] -= 2 * thet_step[0];
-            el = integr(thetk);
+            el = integr(thetk, h, t1, t2, P0);
             delta_prev = el[8];
             return (delta_next - delta_prev) / (2 * thet_step[0])
         }
@@ -130,27 +131,27 @@ function init() {
             let el, thetk, delta_next, delta_prev;
             thetk = thet.slice();
             thetk[1] += thet_step[1];
-            el = integr(thetk);
-            delta_next = el[6] - param.rk;
+            el = integr(thetk, h, t1, t2, P0);
+            delta_next = el[6] - rk(h);
             thetk[1] -= 2 * thet_step[1];
-            el = integr(thetk);
-            delta_prev = el[6] - param.rk;
+            el = integr(thetk, h, t1, t2, P0);
+            delta_prev = el[6] - rk(h);
             return (delta_next - delta_prev) / (2 * thet_step[1])
         }
         function thet_2_th(thet) {
             let el, thetk, delta_next, delta_prev;
             thetk = thet.slice();
             thetk[1] += thet_step[1];
-            el = integr(thetk);
+            el = integr(thetk, h, t1, t2, P0);
             delta_next = el[8];
             thetk[1] -= 2 * thet_step[1];
-            el = integr(thetk);
+            el = integr(thetk, h, t1, t2, P0);
             delta_prev = el[8];
             return (delta_next - delta_prev) / (2 * thet_step[1])
         }
         do {
-            el1 = integr(thet);
-            delta_F = [-el1[6] + param.rk, -el1[8]];
+            el1 = integr(thet, h, t1, t2, P0);
+            delta_F = [-el1[6] + rk(h), -el1[8]];
             if (math.sqrt(math.pow((delta_F[0]) / param.eps_r, 2) + math.pow((delta_F[1]) / param.eps_thet, 2)) < 1) {
                 break
             }
@@ -161,8 +162,8 @@ function init() {
         return thet
     }
     const thet_id = [param.thet_torch, param.thet_2];
-    const arr12 = integr(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2)
-    console.log(arr12);
-    console.log(arr12[5] - vk(param.h_isl_2_2));
+    // const arr12 = integr(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2) 
+    const thet_1 = optimus(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
+    console.log(thet_1);
 }
 init()

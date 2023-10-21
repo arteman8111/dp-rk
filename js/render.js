@@ -78,5 +78,6 @@ const consoleLog = (t, el) => {
 
 export {
     html,
-    render
+    render,
+    consoleLog
 }
