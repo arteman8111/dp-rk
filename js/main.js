@@ -96,74 +96,73 @@ const printTable = (thet, h, t1, t2, P0) => {
     }
     i++
 }
+const optimus = (thet_thet, h, t1, t2, P0) => {
+    let thet = thet_thet.slice();
+    const thet_step = [math.pow(10, -5), math.pow(10, -8)];
 
+    let el1, delta_F;
 
-function init() {
-    function optimus(thet_thet, h, t1, t2, P0) {
-        let thet = thet_thet.slice();
-        const thet_step = [math.pow(10, -5), math.pow(10, -8)];
-
-        let el1, delta_F;
-
-        function thet_torch_rad(thet) {
-            let el, thetk, delta_next, delta_prev;
-            thetk = thet.slice();
-            thetk[0] += thet_step[0];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_next = el[6] - rk(h);
-            thetk[0] -= 2 * thet_step[0];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_prev = el[6] - rk(h)
-            return (delta_next - delta_prev) / (2 * thet_step[0])
-        }
-        function thet_torch_th(thet) {
-            let el, thetk, delta_next, delta_prev;
-            thetk = thet.slice();
-            thetk[0] += thet_step[0];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_next = el[8];
-            thetk[0] -= 2 * thet_step[0];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_prev = el[8];
-            return (delta_next - delta_prev) / (2 * thet_step[0])
-        }
-        function thet_2_rad(thet) {
-            let el, thetk, delta_next, delta_prev;
-            thetk = thet.slice();
-            thetk[1] += thet_step[1];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_next = el[6] - rk(h);
-            thetk[1] -= 2 * thet_step[1];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_prev = el[6] - rk(h);
-            return (delta_next - delta_prev) / (2 * thet_step[1])
-        }
-        function thet_2_th(thet) {
-            let el, thetk, delta_next, delta_prev;
-            thetk = thet.slice();
-            thetk[1] += thet_step[1];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_next = el[8];
-            thetk[1] -= 2 * thet_step[1];
-            el = integr(thetk, h, t1, t2, P0);
-            delta_prev = el[8];
-            return (delta_next - delta_prev) / (2 * thet_step[1])
-        }
-        do {
-            el1 = integr(thet, h, t1, t2, P0);
-            delta_F = [-el1[6] + rk(h), -el1[8]];
-            if (math.sqrt(math.pow((delta_F[0]) / param.eps_r, 2) + math.pow((delta_F[1]) / param.eps_thet, 2)) < 1) {
-                break
-            }
-            const J = math.inv(math.matrix([[thet_torch_rad(thet), thet_2_rad(thet)], [thet_torch_th(thet), thet_2_th(thet)]]));
-            const U = math.multiply(J, delta_F);
-            thet = math.add(thet, U)._data;
-        } while (true)
-        return thet
+    function thet_torch_rad(thet) {
+        let el, thetk, delta_next, delta_prev;
+        thetk = thet.slice();
+        thetk[0] += thet_step[0];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_next = el[6] - rk(h);
+        thetk[0] -= 2 * thet_step[0];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_prev = el[6] - rk(h)
+        return (delta_next - delta_prev) / (2 * thet_step[0])
     }
+    function thet_torch_th(thet) {
+        let el, thetk, delta_next, delta_prev;
+        thetk = thet.slice();
+        thetk[0] += thet_step[0];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_next = el[8];
+        thetk[0] -= 2 * thet_step[0];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_prev = el[8];
+        return (delta_next - delta_prev) / (2 * thet_step[0])
+    }
+    function thet_2_rad(thet) {
+        let el, thetk, delta_next, delta_prev;
+        thetk = thet.slice();
+        thetk[1] += thet_step[1];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_next = el[6] - rk(h);
+        thetk[1] -= 2 * thet_step[1];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_prev = el[6] - rk(h);
+        return (delta_next - delta_prev) / (2 * thet_step[1])
+    }
+    function thet_2_th(thet) {
+        let el, thetk, delta_next, delta_prev;
+        thetk = thet.slice();
+        thetk[1] += thet_step[1];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_next = el[8];
+        thetk[1] -= 2 * thet_step[1];
+        el = integr(thetk, h, t1, t2, P0);
+        delta_prev = el[8];
+        return (delta_next - delta_prev) / (2 * thet_step[1])
+    }
+    do {
+        el1 = integr(thet, h, t1, t2, P0);
+        delta_F = [-el1[6] + rk(h), -el1[8]];
+        if (math.sqrt(math.pow((delta_F[0]) / param.eps_r, 2) + math.pow((delta_F[1]) / param.eps_thet, 2)) < 1) {
+            break
+        }
+        const J = math.inv(math.matrix([[thet_torch_rad(thet), thet_2_rad(thet)], [thet_torch_th(thet), thet_2_th(thet)]]));
+        const U = math.multiply(J, delta_F);
+        thet = math.add(thet, U)._data;
+    } while (true)
+    return thet
+}
+function init() {
     const thet_id = [param.thet_torch, param.thet_2];
-    // const arr12 = integr(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2) 
-    const thet_1 = optimus(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
-    console.log(thet_1);
+    const thet_opt_1 = optimus(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
+    const thet_opt_2 = optimus(thet_id, param.h_isl_2_1, param.t1, param.t2, param.P2);
+    const traekt1 = printTable(thet_opt_1, param.h_isl_2_2, param.t1, param.t2, param.P2);
+    const traekt2 = printTable(thet_opt_2, param.h_isl_2_1, param.t1, param.t2, param.P2)
 }
 init()
