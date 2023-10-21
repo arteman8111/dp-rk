@@ -13,6 +13,7 @@
 
 .app__fix {
     background-color: #ececec;
+	margin: 0;
 }
 
 .app__fix div{

@@ -36,15 +36,12 @@ const x0 = 0;
 const y0 = 0;
 const v0 = 0;
 const r0 = rM;
-const thet = 90;
+const thet = math.pi / 2;
 const THET = 0;
-const THETc = 90;
+const THETc = math.pi / 2;
 const alfa = 0;
 const fi = 0;
 
-// Конечные параметры
-const vk = math.sqrt(uM / (rM + h_isl_2_2));
-const rk = h_isl_2_2 + rM;
 export {
     m0,
     m_pg,
@@ -63,8 +60,6 @@ export {
     t1,
     t2,
     thet_torch,
-    vk,
-    rk,
     eps_r,
     eps_v,
     eps_thet,
