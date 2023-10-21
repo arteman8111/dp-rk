@@ -11,15 +11,14 @@ const integr = (thet, h, t1, t2, P0) => {
     let t_prev = t;
     let el_prev = el.slice();
     while (math.abs(el[5] - vk(h)) > param.eps_v) {
-        if (t + dt > t1 && t < t2) {
+        if (t + dt > t1 && t < t1) {
             dt = t1 - t;
             t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
             dt = param.step - dt;
             t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
-            dt = param.step;
-            t += dt;
+            dt = param.step
         }
         if (t + dt > t2 && t < t2) {
             dt = t2 - t;
@@ -28,8 +27,7 @@ const integr = (thet, h, t1, t2, P0) => {
             dt = param.step - dt;
             t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
-            dt = param.step;
-            t += dt;
+            dt = param.step
         }
         el_prev = el.slice();
         t_prev = t;
@@ -163,6 +161,8 @@ function init() {
         return thet
     }
     const thet_id = [param.thet_torch, param.thet_2];
-    const el3 = printTable(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
+    const arr12 = integr(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2)
+    console.log(arr12);
+    console.log(arr12[5] - vk(param.h_isl_2_2));
 }
 init()
