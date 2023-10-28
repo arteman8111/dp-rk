@@ -1,7 +1,7 @@
 import * as param from "./const.js"
 import paramIter from "./paramIter.js";
 import { html, render } from "./render.js";
-import { vk, rk } from "./express.js";
+import { vk, rk, P } from "./express.js";
 import { consoleLog } from "./render.js";
 let i = 1;
 const integr = (thet, h, t1, t2, P0) => {
@@ -156,13 +156,30 @@ const optimus = (thet_thet, h, t1, t2, P0) => {
         const U = math.multiply(J, delta_F);
         thet = math.add(thet, U)._data;
     } while (true)
-    return thet
+    return [thet, el1]
 }
 function init() {
+    const I = math.matrix(
+        [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1]
+        ]
+    )
+    let alfa = 0.1;
+    const C1 = 0.5;
+    const C2 =2;
     const thet_id = [param.thet_torch, param.thet_2];
-    const thet_opt_1 = optimus(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
-    const thet_opt_2 = optimus(thet_id, param.h_isl_2_1, param.t1, param.t2, param.P2);
-    const traekt1 = printTable(thet_opt_1, param.h_isl_2_2, param.t1, param.t2, param.P2);
-    const traekt2 = printTable(thet_opt_2, param.h_isl_2_1, param.t1, param.t2, param.P2)
+    const [thet_opt_1, el] = optimus(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
+    console.log(thet_opt_1);
+    console.log(el);
+    console.log(el[5] - vk(param.h_isl_2_2));
+    console.log(el[6] - rk(param.h_isl_2_2));
+    console.log(el[8]);
+    // const thet_opt_2 = optimus(thet_id, param.h_isl_2_1, param.t1, param.t2, param.P2);
+    // const traekt1 = printTable(thet_opt_1, param.h_isl_2_2, param.t1, param.t2, param.P2);
+    // const traekt2 = printTable(thet_opt_2, param.h_isl_2_1, param.t1, param.t2, param.P2)
+    // const danya = printTable(thet_id, 335000, 370.56, 450.11, 10700)
+    // const paramID = printTable(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2)
 }
 init()
