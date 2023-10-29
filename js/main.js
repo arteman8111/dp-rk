@@ -96,90 +96,174 @@ const printTable = (thet, h, t1, t2, P0) => {
     }
     i++
 }
-const optimus = (thet_thet, h, t1, t2, P0) => {
-    let thet = thet_thet.slice();
+const optimus = (thet_arr, t, P0, h) => {
+    let thet = thet_arr.slice();
     const thet_step = [math.pow(10, -5), math.pow(10, -8)];
 
     let el1, delta_F;
+    function thet_1_2_torch(thet) {
+        let el, thetk, delta_next_r_1, delta_next_r_2, delta_next_thet_1, delta_next_thet_2;
+        let delta_prev_r_1, delta_prev_r_2, delta_prev_thet_1, delta_prev_thet_2;
+        thetk = thet.slice();
+        thetk[0] += thet_step[0];
+        el = integr(thetk, h, t[0], t[1], P0);
+        delta_next_r_1 = el[6] - rk(h);
+        delta_next_thet_1 = el[8];
 
-    function thet_torch_rad(thet) {
-        let el, thetk, delta_next, delta_prev;
-        thetk = thet.slice();
-        thetk[0] += thet_step[0];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_next = el[6] - rk(h);
         thetk[0] -= 2 * thet_step[0];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_prev = el[6] - rk(h)
-        return (delta_next - delta_prev) / (2 * thet_step[0])
-    }
-    function thet_torch_th(thet) {
-        let el, thetk, delta_next, delta_prev;
-        thetk = thet.slice();
-        thetk[0] += thet_step[0];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_next = el[8];
-        thetk[0] -= 2 * thet_step[0];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_prev = el[8];
-        return (delta_next - delta_prev) / (2 * thet_step[0])
-    }
-    function thet_2_rad(thet) {
-        let el, thetk, delta_next, delta_prev;
+        el = integr(thetk, h, t[0], t[1], P0);
+        delta_prev_r_1 = el[6] - rk(h);
+        delta_prev_thet_1 = el[8];
+
         thetk = thet.slice();
         thetk[1] += thet_step[1];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_next = el[6] - rk(h);
+        el = integr(thetk, h, t[0], t[1], P0);
+        delta_next_r_2 = el[6] - rk(h);
+        delta_next_thet_2 = el[8];
+
         thetk[1] -= 2 * thet_step[1];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_prev = el[6] - rk(h);
-        return (delta_next - delta_prev) / (2 * thet_step[1])
-    }
-    function thet_2_th(thet) {
-        let el, thetk, delta_next, delta_prev;
-        thetk = thet.slice();
-        thetk[1] += thet_step[1];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_next = el[8];
-        thetk[1] -= 2 * thet_step[1];
-        el = integr(thetk, h, t1, t2, P0);
-        delta_prev = el[8];
-        return (delta_next - delta_prev) / (2 * thet_step[1])
+        el = integr(thetk, h, t[0], t[1], P0);
+        delta_prev_r_2 = el[6] - rk(h);
+        delta_prev_thet_2 = el[8];
+
+        const dr_1 = (delta_next_r_1 - delta_prev_r_1) / (2 * thet_step[0]);
+        const dthet_1 = (delta_next_thet_1 - delta_prev_thet_1) / (2 * thet_step[0]);
+
+        const dr_2 = (delta_next_r_2 - delta_prev_r_2) / (2 * thet_step[1]);
+        const dthet_2 = (delta_next_thet_2 - delta_prev_thet_2) / (2 * thet_step[1]);
+        
+        return [[dr_1, dr_2],[dthet_1, dthet_2]]
     }
     do {
-        el1 = integr(thet, h, t1, t2, P0);
+        el1 = integr(thet, h, t[0], t[1], P0);
         delta_F = [-el1[6] + rk(h), -el1[8]];
         if (math.sqrt(math.pow((delta_F[0]) / param.eps_r, 2) + math.pow((delta_F[1]) / param.eps_thet, 2)) < 1) {
             break
         }
-        const J = math.inv(math.matrix([[thet_torch_rad(thet), thet_2_rad(thet)], [thet_torch_th(thet), thet_2_th(thet)]]));
+        // const J = math.inv(math.matrix([[thet_torch_rad(thet), thet_2_rad(thet)], [thet_torch_th(thet), thet_2_th(thet)]]));
+        const J = math.inv(math.matrix(thet_1_2_torch(thet)));
         const U = math.multiply(J, delta_F);
         thet = math.add(thet, U)._data;
     } while (true)
-    return [thet, el1]
+    return thet
 }
 function init() {
-    const I = math.matrix(
-        [
-            [1, 0, 0],
-            [0, 1, 0],
-            [0, 0, 1]
-        ]
-    )
-    let alfa = 0.1;
-    const C1 = 0.5;
-    const C2 =2;
-    const thet_id = [param.thet_torch, param.thet_2];
-    const [thet_opt_1, el] = optimus(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2);
-    console.log(thet_opt_1);
-    console.log(el);
-    console.log(el[5] - vk(param.h_isl_2_2));
-    console.log(el[6] - rk(param.h_isl_2_2));
-    console.log(el[8]);
-    // const thet_opt_2 = optimus(thet_id, param.h_isl_2_1, param.t1, param.t2, param.P2);
-    // const traekt1 = printTable(thet_opt_1, param.h_isl_2_2, param.t1, param.t2, param.P2);
-    // const traekt2 = printTable(thet_opt_2, param.h_isl_2_1, param.t1, param.t2, param.P2)
-    // const danya = printTable(thet_id, 335000, 370.56, 450.11, 10700)
-    // const paramID = printTable(thet_id, param.h_isl_2_2, param.t1, param.t2, param.P2)
+    function levenberg() {
+        let thet_id = [param.thet_torch, param.thet_2];
+        let t_id = [param.t1, param.t2];
+        let dt_step = math.pow(10, -2);
+        let dt_step_double = 2 * math.pow(10, -2);
+
+        function dm_t1(t0_arr) {
+            let delta_next, delta_prev, tk_arr;
+            tk_arr = t0_arr.slice();
+            tk_arr[0] += dt_step;
+            delta_next = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr[0] -= 2 * dt_step;
+            delta_prev = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            return (delta_next - delta_prev) / (2 * dt_step)
+        }
+
+        function dm_t2(t0_arr) {
+            let delta_next, delta_prev, tk_arr;
+            tk_arr = t0_arr.slice();
+            tk_arr[1] += dt_step;
+            delta_next = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr[1] -= 2 * dt_step;
+            delta_prev = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            return (delta_next - delta_prev) / (2 * dt_step)
+        }
+
+        function ddm_t1(t0_arr) {
+            let z1, z2, f_res, dm1_1, dm1_2, dm2_1, dm2_2, tk_arr;
+            tk_arr = t0_arr.slice();
+            dm1_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            dm2_1 = dm1_2;
+            tk_arr[0] += 2 * dt_step_double;
+            dm2_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr[0] -= 4 * dt_step_double;
+            dm1_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            z1 = (dm1_1 - dm1_2) / (2 * dt_step_double);
+            z2 = (dm2_1 - dm2_2) / (2 * dt_step_double);
+            f_res = (z2 - z1) / (2 * dt_step_double);
+            return f_res
+        }
+
+        function ddm_t2(t0_arr) {
+            let z1, z2, f_res, dm1_1, dm1_2, dm2_1, dm2_2, tk_arr;
+            tk_arr = t0_arr.slice();
+            dm1_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            dm2_1 = dm1_2;
+            tk_arr[1] += 2 * dt_step_double;
+            dm2_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr[1] -= 4 * dt_step_double;
+            dm1_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            z1 = (dm1_1 - dm1_2) / (2 * dt_step_double);
+            z2 = (dm2_1 - dm2_2) / (2 * dt_step_double);
+            f_res = (z2 - z1) / (2 * dt_step_double);
+            return f_res
+        }
+        function ddm_t1_t2(t0_arr) {
+            let z1, z2, f_res, dm1_1, dm1_2, dm2_1, dm2_2, tk_arr;
+            tk_arr = t0_arr.slice();
+            tk_arr.map(el => el - dt_step_double);
+            dm1_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr.map(el => el + 2 * dt_step_double);
+            dm2_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr[1] -= 2 * dt_step_double;
+            dm2_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            tk_arr[1] += 2 * dt_step_double;
+            tk_arr[0] -= 2 * dt_step_double;;
+            dm1_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            z1 = (dm1_1 - dm1_2) / (2 * dt_step_double);
+            z2 = (dm2_1 - dm2_2) / (2 * dt_step_double);
+            f_res = (z1 - z2) / (2 * dt_step_double);
+            return f_res
+        }
+        const I = math.matrix(
+            [
+                [1, 0],
+                [0, 1]
+            ]
+        )
+        let C1 = 0.5;
+        let C2 = 2;
+        let alfa = 0.1
+        let alfa_iter = alfa;
+        let t_iter = t_id.slice();
+
+        let c1 = Date.now();
+        do {
+            let gradient = math.matrix([dm_t1(t_iter), dm_t2(t_iter)]);
+            let gradient_module = math.sqrt(math.pow(gradient._data[0], 2) + math.pow(gradient._data[1], 2));
+            if (gradient_module < param.eps_extr) {
+                break
+            }
+            // Гессиан в цикле пока модуль больше предыдушего значения модуля
+            let gessian = math.matrix(
+                [
+                    [ddm_t1(t_iter), ddm_t1_t2(t_iter)],
+                    [ddm_t1_t2(t_iter), ddm_t2(t_iter)]
+                ]
+            )
+            let first = math.add(gessian, math.multiply(alfa_iter, I)); // (Hi + alfai * I)
+            let second = math.inv(first); // // (Hi + alfai * I)^-1
+            let third = math.multiply(second, gradient); // (Hi + alfai * I)^-1 x gradient
+            third = math.multiply(third, -1);
+            t_iter = math.add(t_iter, third)._data;
+        } while (false);
+
+        let c2 = Date.now();
+        console.log("Время работы: ", (c2 - c1) * math.pow(10, -3));
+    }
+    let thet_id = [param.thet_torch, param.thet_2];
+    let t_id = [param.t1, param.t2];
+    let time1 = Date.now();
+    let param1 = optimus(thet_id, t_id, param.P2, param.h_isl_2_2)
+    let time2 = Date.now();
+    console.log("Time is:", (time2 - time1) * math.pow(10, -3));
+    console.log(param1);
+    let opt_thet = [-0.0035953257353098407, -0.3989631417436467];
 }
 init()
+
