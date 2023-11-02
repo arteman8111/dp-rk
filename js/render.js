@@ -73,7 +73,7 @@ const html = (t, el, i) => {
 }
 
 const consoleLog = (t, el) => {
-    console.log(`${t.toFixed(4)} ${el[0].toFixed(4)} ${el[1].toFixed(4)} ${el[2].toFixed(4)} ${el[3].toFixed(4)} ${el[4].toFixed(4)} ${el[5].toFixed(4)} ${el[6].toFixed(4)} ${el[7].toFixed(4)} ${el[8].toFixed(4)} ${el[9].toFixed(4)} ${el[10].toFixed(4)} ${el[11].toFixed(4)}`);
+    console.log(`${t.toFixed(5)} ${el[0].toFixed(5)} ${el[1].toFixed(5)} ${el[2].toFixed(5)} ${el[3].toFixed(5)} ${el[4].toFixed(5)} ${el[5].toFixed(5)} ${el[6].toFixed(5)} ${el[7].toFixed(5)} ${el[8].toFixed(5)} ${el[9].toFixed(5)} ${el[10].toFixed(5)} ${el[11].toFixed(5)}`);
 }
 
 export {
