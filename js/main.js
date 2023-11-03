@@ -192,7 +192,7 @@ function init() {
             dm1_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
             z1 = (dm1_1 - dm1_2) / (2 * dt_step_double);
             z2 = (dm2_1 - dm2_2) / (2 * dt_step_double);
-            f_res = (z2 - z1) / (2 * dt_step_double);
+            f_res = (z1 - z2) / (2 * dt_step_double);
             return f_res
         }
 
@@ -207,23 +207,30 @@ function init() {
             dm1_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
             z1 = (dm1_1 - dm1_2) / (2 * dt_step_double);
             z2 = (dm2_1 - dm2_2) / (2 * dt_step_double);
-            f_res = (z2 - z1) / (2 * dt_step_double);
+            f_res = (z1 - z2) / (2 * dt_step_double);
             return f_res
         }
         function ddm_t1_t2(t0_arr) {
             let z1, z2, f_res, dm1_1, dm1_2, dm2_1, dm2_2, tk_arr;
             tk_arr = t0_arr.slice();
-            tk_arr.map(el => el - dt_step_double);
+            // tk_arr.map(el => el - dt_step_double);
+            tk_arr[0] += dt_step;
+            tk_arr[1] += dt_step_double;
             dm1_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
-            tk_arr.map(el => el + 2 * dt_step_double);
+            // tk_arr.map(el => el + 2 * dt_step_double);
+            tk_arr[0] -= 2 * dt_step;
             dm2_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
+            // tk_arr[1] -= 2 * dt_step_double;
+            tk_arr[0] += 2 * dt_step;
             tk_arr[1] -= 2 * dt_step_double;
             dm2_1 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
-            tk_arr[1] += 2 * dt_step_double;
-            tk_arr[0] -= 2 * dt_step_double;;
+            tk_arr[0] -= 2 * dt_step;
             dm1_2 = optimus(thet_id, tk_arr, param.P2, param.h_isl_2_2);
-            z1 = (dm1_1 - dm1_2) / (2 * dt_step_double);
-            z2 = (dm2_1 - dm2_2) / (2 * dt_step_double);
+
+            z1 = (dm1_1 - dm2_2) / (2 * dt_step);
+            console.log('z1', z1);
+            z2 = (dm2_1 - dm1_2) / (2 * dt_step);
+            console.log('z2', z2);
             f_res = (z1 - z2) / (2 * dt_step_double);
             return f_res
         }
@@ -263,6 +270,7 @@ function init() {
                     [ddm_t1_t2(t_iter), ddm_t2(t_iter)]
                 ]
             )
+            console.log(gessian._data);
             debugger
             do {
                 let first = math.add(gessian, math.multiply(alfa_iter, I)); // (Hi + alfai * I)
