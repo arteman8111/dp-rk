@@ -11,35 +11,37 @@ const integr = (thet, h, t1, t2, P0) => {
 
     let t_prev = t;
     let el_prev = el.slice();
+    let boolk = false;
     while (math.abs(el[5] - vk(h)) > param.eps_v) {
         if (t + dt > t1 && t < t1) {
-            debugger
+            // debugger
             dt = t1 - t;
-            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-            consoleLog(t,el)
+            boolk = true;
             dt = param.step - dt;
-            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-            consoleLog(t,el)
+
             dt = param.step;
         }
         if (t + dt > t2 && t < t2) {
             dt = t2 - t;
-            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-            consoleLog(t,el)
+
+            boolk = false;
             dt = param.step - dt;
-            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-            consoleLog(t,el)
+
             dt = param.step
         }
         el_prev = el.slice();
         t_prev = t;
-        paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+        paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
         t += dt;
-        consoleLog(t,el)
+
         if (el[5] > vk(h)) {
             el = el_prev.slice();
             t = t_prev;
@@ -248,7 +250,6 @@ function init() {
             console.log("Градиент: ", gradient_module);
             console.log("Mass", m_iter);
             console.log("alfa", alfa);
-            debugger
             if (gradient_module < param.eps_extr) {
                 break
             }
@@ -262,6 +263,7 @@ function init() {
                     [ddm_t1_t2(t_iter), ddm_t2(t_iter)]
                 ]
             )
+            debugger
             do {
                 let first = math.add(gessian, math.multiply(alfa_iter, I)); // (Hi + alfai * I)
                 let second = math.inv(first); // // (Hi + alfai * I)^-1
@@ -282,12 +284,9 @@ function init() {
             } while (true);
         } while (true);
     }
-    // levenberg()
+    levenberg()
 
-
-    let thet_id = [param.thet_torch, param.thet_2];
-    let t_id = [370.56, 450.11];
-    let traekt = integr(thet_id, param.h_isl_2_2, t_id[0], t_id[1], param.P2)
+    // let traekt = integr(thet_id, param.h_isl_2_2, t_id[0], t_id[1], param.P2)
     // let table = printTable(thet_id, param.h_isl_2_2, t_id[0], t_id[1], param.P2)
     // let time1 = Date.now();
     // let param1 = optimus(thet_id, t_id, param.P2, param.h_isl_2_2)
