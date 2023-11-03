@@ -3,8 +3,7 @@ import { vx_toch, vy_toch, x_toch, y_toch, m_toch } from "./express.js";
 import { P, thet, TETA, TETAc, alpha, fi } from "./express.js";
 import { debugThis } from "./support.js";
 const grad = value => value * 180 / math.pi;
-function paramIter(el, dt, t, thet_torch, thet_2, t1, t2, P0) {
-    // debugThis(t,665.200)   
+function paramIter(el, dt, t, thet_torch, thet_2, t1, t2, P0) {  
     (function rk4() {
         let k1_vx = dt * vx_toch(t, el[0], el[3], el[4], P(t, t1, t2, P0), thet_torch, thet_2, t1, t2);
         let k1_vy = dt * vy_toch(t, el[0], el[3], el[4], P(t, t1, t2, P0), thet_torch, thet_2, t1, t2);

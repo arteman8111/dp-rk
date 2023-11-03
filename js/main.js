@@ -13,32 +13,33 @@ const integr = (thet, h, t1, t2, P0) => {
     let el_prev = el.slice();
     while (math.abs(el[5] - vk(h)) > param.eps_v) {
         if (t + dt > t1 && t < t1) {
+            debugger
             dt = t1 - t;
-            t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            t += dt;
             consoleLog(t,el)
             dt = param.step - dt;
-            t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            t += dt;
             consoleLog(t,el)
             dt = param.step;
         }
         if (t + dt > t2 && t < t2) {
             dt = t2 - t;
-            t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            t += dt;
             consoleLog(t,el)
             dt = param.step - dt;
-            t += dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            t += dt;
             consoleLog(t,el)
             dt = param.step
         }
         el_prev = el.slice();
         t_prev = t;
         paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
-        consoleLog(t,el)
         t += dt;
+        consoleLog(t,el)
         if (el[5] > vk(h)) {
             el = el_prev.slice();
             t = t_prev;
