@@ -11,7 +11,7 @@ const thet = (t, thet_torch, thet_2, t1, t2) => {
         return thet_2
     }
 }
-const P = (t, t1, t2, P0, bool) => {
+const P = (P0, bool) => {
     if (!bool) {
         return P0;
     } else {

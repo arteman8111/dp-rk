@@ -20,10 +20,8 @@ const h_isl_2_1 = 180 * math.pow(10,3)// м ~ высота орбиты для P
 const h_isl_2_2 = 310 * math.pow(10,3) // м ~ высота орбиты для P2
 
 // Подгоняемые параметры
-// const t1 = 385; // с
-// const t2 = 900; // с
-const t1 = 370.56;
-const t2 = 450.11;
+const t1 = 403; // с
+const t2 = 909; // с
 const thet_torch = -0.001; // рад
 const thet_2 = -0.3;
 
