@@ -22,19 +22,16 @@ const integr = (thet, h, t1, t2, P0) => {
             dt = param.step - dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-
             dt = param.step;
         }
         if (t + dt > t2 && t < t2) {
             dt = t2 - t;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-
             boolk = false;
             dt = param.step - dt;
             paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0, boolk);
             t += dt;
-
             dt = param.step
         }
         el_prev = el.slice();
@@ -50,6 +47,7 @@ const integr = (thet, h, t1, t2, P0) => {
             dt = dt / 10;
         }
     }
+    console.log(t);
     return el
 }
 const printTable = (thet, h, t1, t2, P0) => {
@@ -242,7 +240,7 @@ function init() {
         )
         let C1 = 0.5;
         let C2 = 2;
-        let alfa = 100
+        let alfa = math.pow(10,5)
         let alfa_iter = alfa;
         let t_iter = t_id.slice();
         let t_prev = t_iter
@@ -271,7 +269,7 @@ function init() {
                 ]
             )
             console.log(gessian._data);
-            debugger
+            // debugger
             do {
                 let first = math.add(gessian, math.multiply(alfa_iter, I)); // (Hi + alfai * I)
                 let second = math.inv(first); // // (Hi + alfai * I)^-1
@@ -292,9 +290,12 @@ function init() {
             } while (true);
         } while (true);
     }
-    levenberg()
+    // levenberg()
 
-    // let traekt = integr(thet_id, param.h_isl_2_2, t_id[0], t_id[1], param.P2)
+    let thet_id = [param.thet_torch, param.thet_2];
+    let t_id = [param.t1, param.t2]
+    let traekt = integr(thet_id, param.h_isl_2_2, t_id[0], t_id[1], param.P2)
+    console.log(traekt);
     // let table = printTable(thet_id, param.h_isl_2_2, t_id[0], t_id[1], param.P2)
     // let time1 = Date.now();
     // let param1 = optimus(thet_id, t_id, param.P2, param.h_isl_2_2)
