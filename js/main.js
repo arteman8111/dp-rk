@@ -138,21 +138,23 @@ const thet_optimus = (thet_arr, t, P0, h) => {
             [dthet_1, dthet_2]
         ]
     }
+    // let c1 = Date.now();
     do {
         el1 = integr(thet, h, t[0], t[1], P0);
         dF = [-el1[6] + rk(h), -el1[8]];
-        debugger
+        // debugger
         if (math.sqrt(math.pow((dF[0]) / param.eps_r, 2) + math.pow((dF[1]) / param.eps_thet, 2)) < 1) {
             break
         }
         const J = math.matrix(thet_1_2_torch(thet));
-        if (math.det(J) === 0) {
-            console.log('detJ = 0');
-            break
-        }
         const J_inv = math.inv(J);
         const U = math.multiply(J_inv, dF);
         thet = math.add(thet, U)._data;
+        // let c2 = Date.now();
+        // if (c2 - c1 > 6000){
+        //     console.log("Подберите другие thet_torch и thet_2!");
+        //     break
+        // }
     } while (true)
     return thet
 }
@@ -198,15 +200,11 @@ const optimus = (thet_arr, t, P0, h) => {
             break
         }
         const J = math.matrix(thet_1_2_torch(thet));
-        if (math.det(J) === 0) {
-            console.log('detJ = 0');
-            break;
-        }
         const J_inv = math.inv(J);
         const U = math.multiply(J_inv, dF);
         thet = math.add(thet, U)._data;
     } while (true)
-    return el1[0]
+    return el1[0];
 }
 function init() {
     function levenberg() {
@@ -294,7 +292,7 @@ function init() {
         )
         let C1 = math.pow(2, -1);
         let C2 = math.pow(2, 1);
-        let alfa = math.pow(2, -3);
+        let alfa = math.pow(10, 0);
         let alfa_iter = alfa;
         let t_iter = t_id.slice();
         let t_prev = t_iter.slice();
@@ -302,6 +300,7 @@ function init() {
         let gradient, gradient_module
         let m_iter, m_iter_prev
         let thet_id = thet_optimus([param.thet_torch, param.thet_2], t_iter, param.P2, param.h_isl_2_2);
+        // let c1 = Date.now();
         do {
             gradient = math.matrix([dm_t1(t_iter), dm_t2(t_iter)]);
             gradient_module = math.sqrt(math.pow(gradient._data[0], 2) + math.pow(gradient._data[1], 2));
@@ -339,12 +338,17 @@ function init() {
                 }
                 alfa_iter *= C2;
                 t_iter = t_prev.slice();
+                // let c2 = Date.now();
+                // if (c2 - c1 > 30000){
+                //     console.log("Долго")
+                //     break
+                // }
                 // gradient = math.clone(gradient_prev);
             } while (true);
         } while (true);
     }
     // levenberg()
-    let a = thet_optimus([param.thet_torch, param.thet_2], [370, 520], param.P2, param.h_isl_2_2);
+    // let a = thet_optimus([param.thet_torch, param.thet_2], [param.t1, param.t2], param.P2, param.h_isl_2_2);
     // console.log(a);
 }
 init()
