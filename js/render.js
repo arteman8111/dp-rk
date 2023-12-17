@@ -76,6 +76,59 @@ const consoleLog = (t, el) => {
     console.log(`${t.toFixed(5)} ${el[0].toFixed(5)} ${el[1].toFixed(5)} ${el[2].toFixed(5)} ${el[3].toFixed(5)} ${el[4].toFixed(5)} ${el[5].toFixed(5)} ${el[6].toFixed(5)} ${el[7].toFixed(5)} ${el[8].toFixed(5)} ${el[9].toFixed(5)} ${el[10].toFixed(5)} ${el[11].toFixed(5)}`);
 }
 
+const printTable = (thet, h, t1, t2, P0) => {
+    render(thet, P0, h, t1, t2, i);
+    let dt = param.step;
+    let t = param.t0;
+    let el = [param.m0, param.vx0, param.vy0, param.x0, param.y0, param.v0, param.r0, param.thet, param.THET, param.alfa, param.fi, param.THETc];
+    html(t, el, i);
+
+    let t_prev = t;
+    let el_prev = el.slice();
+    while (math.abs(el[5] - vk(h)) > param.eps_v) {
+        if (t + dt > t1 && t < t1) {
+            dt = t1 - t;
+            t += dt;
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            html(t, el, i)
+            dt = param.step - dt;
+            t += dt;
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            html(t, el, i);
+            dt = param.step
+        }
+        if (t + dt > t2 && t < t2) {
+            dt = t2 - t;
+            t += dt;
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            html(t, el, i)
+            dt = param.step - dt;
+            t += dt;
+            paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+            html(t, el, i)
+            dt = param.step
+        }
+        el_prev = el.slice();
+        t_prev = t;
+        paramIter(el, dt, t, thet[0], thet[1], t1, t2, P0);
+        t += dt;
+        if (el[5] < vk(h) && dt === param.step) {
+            html(t, el, i);
+        }
+        if (math.abs(el[5] - vk(h)) < param.eps_v) {
+            html(t, el, i);
+        }
+        if (el[5] > vk(h)) {
+            el = el_prev.slice();
+            t = t_prev;
+            el_prev = el.slice();
+            t_prev = t;
+            dt = dt / 10;
+        }
+    }
+    i++
+}
+
 export {
     html,
     render,
