@@ -30,7 +30,7 @@ const vx_toch = (t, m, x, y, P, thet_torch, thet_2, t1, t2) => P * math.cos(thet
 const vy_toch = (t, m, x, y, P, thet_torch, thet_2, t1, t2) => P * math.sin(thet(t, thet_torch, thet_2, t1, t2)) / m - gy(x, y);
 const x_toch = (v) => v;
 const y_toch = (v) => v;
-const m_toch = (P) => -P / param.W;
+const m_toch = (P, W) => -P / W;
 
 // Конечные параметры
 const vk = (h) => math.sqrt(param.uM / (param.rM + h));
